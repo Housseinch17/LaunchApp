@@ -38,7 +38,7 @@ fun ItemList(
     modifier: Modifier,
     list: List<Item>,
     isTitle: String,
-    onButtonClick: (price: Double, title: String) -> Unit,
+    onButtonClick: (item: Item) -> Unit,
     onCancel: () -> Unit,
     onNext: () -> Unit
 ) {
@@ -49,12 +49,10 @@ fun ItemList(
         list.forEach { item ->
             ItemComponent(
                 modifier = Modifier.fillMaxWidth(),
-                title = item.title,
-                description = item.description,
-                price = item.price,
+                item = item,
                 isTitle = isTitle
             ) {
-                onButtonClick(item.price, item.title)
+                onButtonClick(item)
             }
         }
         SharedButtons(
@@ -72,13 +70,11 @@ fun ItemList(
 @Composable
 fun ItemComponent(
     modifier: Modifier,
-    title: String,
-    description: String,
-    price: Double,
+    item: Item,
     isTitle: String,
     onButtonClick: () -> Unit
 ) {
-    val isSelected = isTitle == title
+    val isSelected = isTitle == item.title
     Row(modifier = modifier) {
         RadioButton(
             selected = isSelected, onClick = onButtonClick,
@@ -88,9 +84,7 @@ fun ItemComponent(
         )
         ClassComponent(
             modifier = Modifier.fillMaxWidth(1f),
-            title = title,
-            description = description,
-            price = price
+            item = item
         )
     }
 }
@@ -98,21 +92,19 @@ fun ItemComponent(
 @Composable
 fun ClassComponent(
     modifier: Modifier,
-    title: String,
-    description: String,
-    price: Double
+    item: Item
 ) {
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_xsmall)),
     ) {
-        Text(text = title, modifier = modifier, style = itemTitle)
+        Text(text = item.title, modifier = modifier, style = itemTitle)
         Text(
-            text = description,
+            text = item.description,
             modifier = modifier,
             style = itemDescription
         )
-        Text(text = "$$price", modifier = modifier, style = itemPrice)
+        Text(text = "$${item.price}", modifier = modifier, style = itemPrice)
         HorizontalDivider(modifier = modifier, thickness = 1.dp, color = Color.LightGray)
     }
 }

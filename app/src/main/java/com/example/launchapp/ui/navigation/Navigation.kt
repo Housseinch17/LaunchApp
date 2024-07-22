@@ -8,7 +8,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.launchapp.data.DataSource
-import com.example.launchapp.ui.ItemEvents
 import com.example.launchapp.ui.LaunchViewModel
 import com.example.launchapp.ui.screens.AccompanimentList
 import com.example.launchapp.ui.screens.EntreeList
@@ -38,8 +37,8 @@ fun Navigation(
                 modifier = modifier,
                 list = DataSource.chooseEntree,
                 isTitle = itemUiState.entree.title,
-                onButtonClick = { entreeTitle, entreePrice ->
-                    launchViewModel.handleEvents(ItemEvents.EntreeClick(entreePrice, entreeTitle))
+                onButtonClick = { entree->
+                    launchViewModel.updateEntree(entree)
                 },
                 onCancel = {
                     onCancelOrder(launchViewModel, navHostController)
@@ -52,13 +51,8 @@ fun Navigation(
                 modifier = modifier,
                 list = DataSource.chooseSideDish,
                 isTitle = itemUiState.sideDish.title,
-                onButtonClick = { sideDishTitle, sideDishPrice ->
-                    launchViewModel.handleEvents(
-                        ItemEvents.SideDishClick(
-                            sideDishPrice,
-                            sideDishTitle
-                        )
-                    )
+                onButtonClick = { sideDish->
+                    launchViewModel.updateSideDish(sideDish)
                 },
                 onCancel = { onCancelOrder(launchViewModel, navHostController) },
                 onNext = { navHostController.navigate(DataSource.LaunchScreen.ChooseAccompaniment.name) })
@@ -68,13 +62,8 @@ fun Navigation(
                 modifier = modifier,
                 list = DataSource.chooseAccompaniment,
                 isTitle = itemUiState.accompaniment.title,
-                onButtonClick = { accompanimentTitle, accompanimentPrice ->
-                    launchViewModel.handleEvents(
-                        ItemEvents.AccompanimentClick(
-                            accompanimentPrice,
-                            accompanimentTitle
-                        )
-                    )
+                onButtonClick = { accompanimentItem->
+                    launchViewModel.updateAccompaniment(accompanimentItem)
                 },
                 onCancel = { onCancelOrder(launchViewModel, navHostController) },
                 onNext = { navHostController.navigate(DataSource.LaunchScreen.OrderCheckOut.name) })
@@ -82,11 +71,7 @@ fun Navigation(
         composable(DataSource.LaunchScreen.OrderCheckOut.name) {
             OrderCheckOut(
                 modifier = modifier,
-                entree = itemUiState.entree,
-                sideDish = itemUiState.sideDish,
-                accompaniment = itemUiState.accompaniment, subTotal = itemUiState.subTotal,
-                tax = itemUiState.tax,
-                total = itemUiState.total,
+                itemUiState,
                 onCancel = {
                     onCancelOrder(
                         navHostController = navHostController,

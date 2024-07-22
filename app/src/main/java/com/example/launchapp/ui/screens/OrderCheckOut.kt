@@ -17,6 +17,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import com.example.launchapp.R
 import com.example.launchapp.data.Item
+import com.example.launchapp.data.ItemUiState
 import com.example.launchapp.ui.sharedComponents.SharedButtons
 import com.example.launchapp.ui.theme.itemDescription
 import com.example.launchapp.ui.theme.itemPrice
@@ -25,26 +26,21 @@ import com.example.launchapp.ui.theme.itemTitle
 @Composable
 fun OrderCheckOut(
     modifier: Modifier,
-    entree: Item,
-    sideDish: Item,
-    accompaniment: Item,
-    subTotal: Double,
-    tax: Double,
-    total: Double,
+    itemUiState: ItemUiState,
     onCancel: ()-> Unit,
     onSubmit: ()-> Unit,
 ) {
     CheckOut(
-        modifier, entree, sideDish, accompaniment, subTotal, tax, total,onCancel,onSubmit
+        modifier, itemUiState.entree, itemUiState.sideDish, itemUiState.accompaniment, itemUiState.subTotal, itemUiState.tax, itemUiState.total,onCancel,onSubmit
     )
 }
 
 @Composable
 fun CheckOut(
     modifier: Modifier,
-    entree: Item,
-    sideDish: Item,
-    accompaniment: Item,
+    entree: Item.EntreeItem?,
+    sideDish: Item.SideDishItem?,
+    accompaniment: Item.AccompanimentItem?,
     subTotal: Double,
     tax: Double,
     total: Double,
@@ -60,9 +56,9 @@ fun CheckOut(
             modifier = Modifier.fillMaxWidth(),
             style = itemTitle
         )
-        OrderSummary(Modifier.fillMaxWidth(), entree.title, entree.price)
-        OrderSummary(Modifier.fillMaxWidth(), sideDish.title, sideDish.price)
-        OrderSummary(Modifier.fillMaxWidth(), accompaniment.title, accompaniment.price)
+        OrderSummary(Modifier.fillMaxWidth(), entree?.title, entree?.price)
+        OrderSummary(Modifier.fillMaxWidth(), sideDish?.title, sideDish?.price)
+        OrderSummary(Modifier.fillMaxWidth(), accompaniment?.title, accompaniment?.price)
         HorizontalDivider(Modifier.fillMaxWidth(), thickness = 1.dp, color = Color.Gray)
         Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.End,verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_small))) {
             TotalSummary(
@@ -92,9 +88,9 @@ fun CheckOut(
 }
 
 @Composable
-fun OrderSummary(modifier: Modifier, title: String, price: Double) {
+fun OrderSummary(modifier: Modifier, title: String?, price: Double?) {
     Row(modifier = modifier, horizontalArrangement = Arrangement.SpaceBetween) {
-        Text(text = title, style = itemDescription)
+        Text(text = ""+title, style = itemDescription)
         Text(text = "$$price", style = itemPrice)
     }
 }
